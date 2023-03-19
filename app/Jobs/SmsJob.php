@@ -14,6 +14,20 @@ class SmsJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public int $timeout = 120;
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public int $tries = 5;
+
+    /**
      * @var string
      */
     protected string $phone_number;
@@ -31,6 +45,8 @@ class SmsJob implements ShouldQueue
     {
         $this->phone_number = $phone_number;
         $this->message = $message;
+        $this->onQueue('sms');
+        $this->delay(now()->addSeconds(10));
     }
 
     /**
